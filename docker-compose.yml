@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  svn:
+    build: .
+    image: cnx/svn-ldap:1.0.0
+    container_name: svn-ldap
+    restart: unless-stopped
+    environment:
+      - SVN_ROOT=/var/svn
+      - AuthLDAPURL=ldap://ldap.example.com:389/dc=example,dc=com?uid?sub?(objectClass=person)
+      - AuthLDAPBindDN=cn=readonly,dc=example,dc=com
+      - AuthLDAPBindPassword=yourpassword
+      - RequireLDAPGroup=svn-users
+      - LDAPBaseDN=dc=example,dc=com
+      - AuthName=Subversion Repository
+      - ReadOnlyUser=redmine
+      - BehindSSLProxy=true
+    volumes:
+      - ./svn-data:/var/svn
+    ports:
+      - "8080:80"
